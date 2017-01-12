@@ -246,6 +246,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = ZVQ5GS956C;
 				INFOPLIST_FILE = MidiCapture/Info.plist;
@@ -260,6 +261,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = ZVQ5GS956C;
 				INFOPLIST_FILE = MidiCapture/Info.plist;
@@ -280,7 +282,7 @@
 				4393D5A61E260B2A003EEFA7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		4393D5A71E260B2A003EEFA7 /* Build configuration list for PBXNativeTarget "MidiCapture" */ = {
 			isa = XCConfigurationList;
@@ -289,6 +291,7 @@
 				4393D5A91E260B2A003EEFA7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
