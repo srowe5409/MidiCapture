@@ -21,9 +21,8 @@ var packet1:MIDIPacket = MIDIPacket()
 
 class ViewController: NSViewController {
     
-    //@IBOutlet var text: NSTextField!
-    @IBOutlet var text: NSTextField!
     
+    @IBOutlet var text: NSScrollView!
     
     @IBOutlet var channel: NSComboBox!
     //@IBAction func chanChanged(_ sender: Any) {
@@ -36,11 +35,15 @@ class ViewController: NSViewController {
     func runTimeCode(){
         if arrayMidiIn.count > 0{
             for str in arrayMidiIn{
-                text.stringValue = text.stringValue + arrayMidiIn.popLast()! as String + "\n"
-                
+                //text.insertText(str)
+                text.documentView?.insertText(arrayMidiIn.popLast())
+                text.documentView?.insertNewline(text)
             }
         }
-        else{ text.stringValue = "" }
+        else{
+                   }
+        //text.displayIfNeeded()
+        
         
     }
     override func viewDidLoad() {
@@ -71,7 +74,8 @@ class ViewController: NSViewController {
         
         Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(runTimeCode), userInfo: nil, repeats: true)
         
-        text.stringValue = "The Text Label"
+        text.insertText("Begin")
+        text.displayIfNeeded()
         let destNames = getDestinationNames();
         
         print("Number of MIDI Destinations: \(destNames.count)");
