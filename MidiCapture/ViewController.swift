@@ -17,12 +17,21 @@ var outPort:MIDIPortRef = 0;
 var inPort:MIDIPortRef = 0
 var dest:MIDIEndpointRef = 0
 var chanNum:UInt8 = 0
+var packet1:MIDIPacket = MIDIPacket()
 
 class ViewController: NSViewController {
     
+    //@IBOutlet var text: NSTextField!
     @IBOutlet var text: NSTextField!
-   
     
+    
+    @IBOutlet var channel: NSComboBox!
+    //@IBAction func chanChanged(_ sender: Any) {
+    //    chanNum = UInt8(channel.indexOfSelectedItem)
+    //}
+    @IBAction func chanChanged(_ sender: Any) {
+        chanNum = UInt8(channel.indexOfSelectedItem)
+    }
     
     func runTimeCode(){
         if arrayMidiIn.count > 0{
@@ -36,7 +45,30 @@ class ViewController: NSViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        gtextField.self = text.self
+        channel.removeAllItems()
+        channel.addItem(withObjectValue: "Chan 1")
+        channel.addItem(withObjectValue: "Chan 2")
+        channel.addItem(withObjectValue: "Chan 3")
+        channel.addItem(withObjectValue: "Chan 4")
+        channel.addItem(withObjectValue: "Chan 5")
+        channel.addItem(withObjectValue: "Chan 6")
+        channel.addItem(withObjectValue: "Chan 7")
+        channel.addItem(withObjectValue: "Chan 8")
+        
+        channel.addItem(withObjectValue: "Chan 9")
+        channel.addItem(withObjectValue: "Chan 10")
+        channel.addItem(withObjectValue: "Chan 11")
+        channel.addItem(withObjectValue: "Chan 12")
+        channel.addItem(withObjectValue: "Chan 13")
+        channel.addItem(withObjectValue: "Chan 14")
+        channel.addItem(withObjectValue: "Chan 15")
+        channel.addItem(withObjectValue: "Chan 16")
+        //gtextField.self = text.self
+        
+        MIDIClientCreate("MidiTestClient" as CFString, nil, nil, &midiClient);
+        MIDIOutputPortCreate(midiClient, "MidiTest_OutPort" as CFString, &outPort);
+        
+        
         Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(runTimeCode), userInfo: nil, repeats: true)
         
         text.stringValue = "The Text Label"
@@ -57,13 +89,12 @@ class ViewController: NSViewController {
         }
         
         
-        MIDIClientCreate("MidiTestClient" as CFString, nil, nil, &midiClient);
-        MIDIOutputPortCreate(midiClient, "MidiTest_OutPort" as CFString, &outPort);
         
-        var packet1:MIDIPacket = MIDIPacket();
+        
+        packet1 = MIDIPacket();
         packet1.timeStamp = 0;
         packet1.length = 3;
-        packet1.data.0 = 0x90 + 0; // Note On event channel 1
+        packet1.data.0 = 0x90 + 1; // Note On event channel 1
         packet1.data.1 = 0x3C; // Note C3
         packet1.data.2 = 100; // Velocity
         
@@ -81,7 +112,7 @@ class ViewController: NSViewController {
         dest = MIDIGetDestination(destNum);
         print("Playing note for 1 second on channel 1")
         MIDISend(outPort, dest, &packetList);
-        packet1.data.0 = 0x80 + 0; // Note Off event channel 1
+        packet1.data.0 = 0x80 + 1; // Note Off event channel 1
         packet1.data.2 = 0; // Velocity
         sleep(1);
         packetList = MIDIPacketList(numPackets: 1, packet: packet1);
@@ -139,30 +170,30 @@ func MyMIDIReadProc(pktList: UnsafePointer<MIDIPacketList>,
             }
         }
         
-        //if cnt < 0xff{
-        //if packet.data.0 != 0xfe{
-        //gtextField.stringValue = ""
+        
         if packet.data.0 != 0xfe {
-           //if gtextField.stringValue.characters.count > 64 { gtextField.stringValue = ""}
-            //gtextField.stringValue = gtextField.stringValue + dumpStr + "\n"
-            //gtextField.stringValue = dumpStr
-            //gtextField.setNeedsDisplay()
-            //gtextField.displayIfNeeded()
+          
             arrayMidiIn.append(dumpStr)
         }
-        //}
-           // cnt += 1
-        //}
+       
         
-        var packet1:MIDIPacket = MIDIPacket();
-        //packetList = MIDIPacketList(numPackets: 1, packet: packet1);
-        packet1.timeStamp = 0;
-        packet1.length = 3;
-        packet1.data.0 = packet.data.0 | chanNum; // Note On event channel ?
-        packet1.data.1 = packet.data.1; // Note ??
-        packet1.data.2 = packet.data.2; // Velocity
-        MIDISend(outPort, dest, &packetList);
+        
+       
+       
+        
         if (packet.data.0 & 0xf0) == 0x90 || (packet.data.0 & 0xf0) == 0x80{
+            dest = MIDIGetDestination(2);
+            packet1 = MIDIPacket();
+            packet1.timeStamp = 0;
+            packet1.length = 3;
+            packet1.data.0 = packet.data.0 | chanNum; // Note On event channel 1
+            packet1.data.1 = packet.data.1; // Note C3
+            packet1.data.2 = packet.data.2; // Velocity
+            packetList = MIDIPacketList(numPackets: 1, packet: packet1);
+            
+           
+            MIDISend(outPort, dest, &packetList);
+            
             print(dumpStr)
         }
         packet = MIDIPacketNext(&packet).pointee
